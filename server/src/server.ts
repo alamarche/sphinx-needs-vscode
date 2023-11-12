@@ -237,7 +237,7 @@ function check_wk_confs(configs: WsConfigs) {
 
 // Get workspace settings
 async function get_wk_conf_settings() {
-	const cal_wk_folder_uri: string = workspace_folder_uri.replace('file://', '');
+	const cal_wk_folder_uri: string = workspace_folder_uri.replace('file:///', '').replace('%3A', ':');
 
 	// Get configuration of sphinx-needs.needsJson
 	let needs_json_path = '';
@@ -324,7 +324,7 @@ connection.onDidChangeWatchedFiles((_change) => {
 	let needs_json_file_changes: FileEvent | undefined;
 	const changed_files = _change.changes;
 	changed_files.forEach((changed_file) => {
-		const changed_file_uri = changed_file.uri.replace('file://', '');
+		const changed_file_uri = changed_file.uri.replace('file:///', '').replace('%3A', ':')
 		if (Object.keys(needs_infos).indexOf(changed_file_uri) >= 0) {
 			needs_json_file_changes = changed_file;
 		}
@@ -332,7 +332,7 @@ connection.onDidChangeWatchedFiles((_change) => {
 
 	// Needs Json file changed
 	if (needs_json_file_changes) {
-		const changed_needs_json = needs_json_file_changes.uri.replace('file://', '');
+		const changed_needs_json = needs_json_file_changes.uri.replace('file:///', '').replace('%3A', ':')
 		// Check file change type
 		if (needs_json_file_changes.type === 1) {
 			// Usecase: configuration of NeedsJson file not in sync with needs json file name, user changed file name to sync
@@ -776,7 +776,7 @@ function get_curr_needs_info(params: TextDocumentPositionParams): NeedsTypesDocs
 		return needs_infos[wsConfigs.needsJson];
 	} else {
 		// Get current document file path
-		const curr_doc_uri = params.textDocument.uri.replace('file://', '');
+		const curr_doc_uri = params.textDocument.uri.replace('file:///', '').replace('%3A', ':');
 		// Check and determine which needsJson infos to use
 		for (const [need_json, need_info] of Object.entries(needs_infos)) {
 			if (need_info?.all_files_abs_paths && need_info.all_files_abs_paths.indexOf(curr_doc_uri) >= 0) {
